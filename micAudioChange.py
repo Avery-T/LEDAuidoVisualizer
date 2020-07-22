@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 import numpy as np
 import sounddevice as sd
+import math
+import serial
+import struct
 from time import sleep
-import mathd
 
+
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+ser.flush()
 
 outdata = np.array([])
 samplerate = 44100
@@ -17,10 +22,10 @@ oldMagSum = 0
 def callback(indata,frames, time, status):
     global oldMagSum
     magnitude = np.abs(np.fft.rfft(indata[:, 0], n=fftsize))
-    magSum = np.sum(magnitude) 
-    
+    magSum = np.sum(magnitude)
     if(magSum > oldMagSum):
-        print(magSum)
+        #writes the number to the arduino, and packs it into bytes
+       ser.write(struct.pack('<f', round(magSum)))
     oldMagSum = magSum
          
 with sd.InputStream(device = 0, channels=2, samplerate=samplerate, 
