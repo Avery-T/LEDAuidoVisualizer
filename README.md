@@ -8,7 +8,7 @@ Arduino then displays a led of a defined color across
 the led strip connected to it for every input it gets from the Python script.
 
 ## What is needed 
- - Pthon3
+ - Python3
  - USB microphone
  - Arduino (connected to your computer) 
  - FastLED (Arduino Library) compatible LED Strip
