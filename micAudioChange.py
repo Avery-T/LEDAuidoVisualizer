@@ -4,12 +4,17 @@ import sounddevice as sd
 import math
 import serial
 import struct
+import os 
 from time import sleep
 
-
-ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+#attemps to find the device idof the pulleged in arduino
+arduinoCheck = os.popen("find /dev/ttyACM*") 
+arduino = arduinoCheck.readlines()
+arduino = arduino[0] 
+arduino = arduino[:-1] #last two characters are not in the path
+#if arduino is not found manually type in path
+ser = serial.Serial(arduino, 9600, timeout=0)
 ser.flush()
-
 outdata = np.array([])
 samplerate = 44100
 high = 4000
@@ -22,13 +27,12 @@ oldMagSum = 0
 def callback(indata,frames, time, status):
     global oldMagSum
     magnitude = np.abs(np.fft.rfft(indata[:, 0], n=fftsize))
-    magSum = np.sum(magnitude)
-    if(magSum > oldMagSum):
-        #writes the number to the arduino, and packs it into bytes
-       ser.write(struct.pack('<f', round(magSum)))
+    magSum = round(np.sum(magnitude)) 
+    #writes the number to the arduino, and packs it into bytes
+    ser.write(struct.pack('<f', magSum))
     oldMagSum = magSum
+    print(magSum)
          
 with sd.InputStream(device = 0, channels=2, samplerate=samplerate, 
         callback = callback):
     sd.sleep(100*10000)
-    
