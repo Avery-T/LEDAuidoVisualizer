@@ -3,7 +3,7 @@
 This code visualizes audio captured from a USB microphone. 
 The Python script connects to the USB microphone and checks whether 
 a given sample of audio is louder than the prior sample. 
-The python script then sends input to the Arduino via serial port. The  
+The Python script then sends input to the Arduino via serial port. The  
 Arduino then displays a led of a defined color across 
 the led strip connected to it for every input it gets from the Python script.
 
